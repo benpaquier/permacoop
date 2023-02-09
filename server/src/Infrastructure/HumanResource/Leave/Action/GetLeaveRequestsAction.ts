@@ -10,6 +10,7 @@ import { GetLeaveRequestsQuery } from 'src/Application/HumanResource/Leave/Query
 import { PaginationDTO } from 'src/Infrastructure/Common/DTO/PaginationDTO';
 import { Pagination } from 'src/Application/Common/Pagination';
 import { LoggedUser } from '../../User/Decorator/LoggedUser';
+import { LeaveRequestsDTO } from '../DTO/LeaveRequestsDTO';
 
 @Controller('leave-requests')
 @ApiTags('Human Resource')
@@ -25,11 +26,11 @@ export class GetLeaveRequestsAction {
   @Roles(UserRole.COOPERATOR, UserRole.EMPLOYEE)
   @ApiOperation({ summary: 'Get all leave requests' })
   public async index(
-    @Query() pagination: PaginationDTO,
+    @Query() dto: LeaveRequestsDTO,
     @LoggedUser() user: User
   ): Promise<Pagination<LeaveRequestView>> {
     return await this.queryBus.execute(
-      new GetLeaveRequestsQuery(user.getId(), pagination.page)
+      new GetLeaveRequestsQuery(user.getId(), dto.page, dto.status, dto.limit)
     );
   }
 }
